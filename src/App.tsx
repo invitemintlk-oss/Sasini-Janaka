@@ -190,7 +190,7 @@ function CountdownTimer() {
 
 // Google Apps Script Web App URL for Sasini & Janaka's RSVP sheet
 // (paste the /exec URL from Deploy → New deployment → Web app; see Code.ts)
-const SCRIPT_URL = "PASTE_YOUR_WEB_APP_URL_HERE";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxunSriOtosbcrL_kWybhWqlxS9-ISmsQ6iZXIks54uv-blYCFbuLZrwV1YYqoyYgIZMA/exec";
 
 export default function WeddingInvitation() {
   const [isOpened, setIsOpened] = useState(false);
