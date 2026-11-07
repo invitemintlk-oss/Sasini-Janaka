@@ -1,8 +1,28 @@
-function doPost(e) {
+/**
+ * Sasini & Janaka – RSVP receiver (Google Apps Script)
+ *
+ * Sheet: https://docs.google.com/spreadsheets/d/1pSeRBSnlpRsk250AqqmmMpbA2r2vYc97OaWUKlmqx8k/edit
+ *
+ * Setup:
+ *  1. Open the sheet → Extensions → Apps Script.
+ *  2. Delete everything in Code.gs and paste this whole file.
+ *  3. Save, then Deploy → New deployment → type "Web app".
+ *       Execute as: Me      Who has access: Anyone
+ *  4. Authorise, copy the Web app URL (ends with /exec)
+ *     and paste it into SCRIPT_URL in src/App.tsx.
+ *
+ * The website RSVP form sends: Name, Attending, Guests, Wish, Invited As
+ */
+
+const SPREADSHEET_ID = "1pSeRBSnlpRsk250AqqmmMpbA2r2vYc97OaWUKlmqx8k";
+const SHEET_NAME = "RSVP";
+const HEADERS = ["Timestamp", "Name", "Attending", "Guests", "Wish", "Invited As"];
+
+function doGet(e) {
   return handleRequest(e);
 }
 
-function doGet(e) {
+function doPost(e) {
   return handleRequest(e);
 }
 
@@ -11,63 +31,61 @@ function handleRequest(e) {
   lock.tryLock(10000);
 
   try {
-    const params = e.parameter;
-    const formName = params.formName;
-    const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+    const params = (e && e.parameter) || {};
+    const sheet = getSheet();
 
-    let sheetName = "";
-    if (formName === "rsvp") {
-      sheetName = "RSVP";
-    } else if (formName === "wish") {
-      sheetName = "Wishes";
-    } else {
-      return ContentService.createTextOutput(JSON.stringify({ "result": "error", "error": "Invalid formName" }))
-        .setMimeType(ContentService.MimeType.JSON);
+    const row = [new Date()];
+    for (let i = 1; i < HEADERS.length; i++) {
+      row.push(params[HEADERS[i]] || "");
     }
+    sheet.appendRow(row);
 
-    let sheet = spreadsheet.getSheetByName(sheetName);
-    if (!sheet) {
-      sheet = spreadsheet.insertSheet(sheetName);
-    }
-
-    let headers = [];
-    if (formName === "rsvp") {
-      headers = ["Timestamp", "Name", "Guests", "Dietary Notes"];
-    } else if (formName === "wish") {
-      headers = ["Timestamp", "Name", "Message"];
-    }
-
-    // Check if headers exist
-    const range = sheet.getRange(1, 1, 1, Math.max(sheet.getMaxColumns(), headers.length));
-    const existingHeaders = range.getValues()[0];
-    
-    let isHeaderMissing = false;
-    for (let i = 0; i < headers.length; i++) {
-      if (existingHeaders[i] !== headers[i]) {
-        isHeaderMissing = true;
-        break;
-      }
-    }
-
-    if (isHeaderMissing) {
-      sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
-      sheet.getRange(1, 1, 1, headers.length).setFontWeight("bold");
-    }
-
-    const rowData = [new Date()];
-    for (let i = 1; i < headers.length; i++) {
-      rowData.push(params[headers[i]] || "");
-    }
-
-    sheet.appendRow(rowData);
-
-    return ContentService.createTextOutput(JSON.stringify({ "result": "success", "row": sheet.getLastRow() }))
-      .setMimeType(ContentService.MimeType.JSON);
-
+    return json({ result: "success", row: sheet.getLastRow() });
   } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ "result": "error", "error": error.message }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return json({ result: "error", error: String(error && error.message ? error.message : error) });
   } finally {
     lock.releaseLock();
   }
+}
+
+function getSheet() {
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  let sheet = spreadsheet.getSheetByName(SHEET_NAME);
+  if (!sheet) {
+    sheet = spreadsheet.insertSheet(SHEET_NAME);
+  }
+
+  const headerRange = sheet.getRange(1, 1, 1, HEADERS.length);
+  const current = headerRange.getValues()[0];
+  const needsHeaders = HEADERS.some(function (h, i) { return current[i] !== h; });
+
+  if (needsHeaders) {
+    headerRange
+      .setValues([HEADERS])
+      .setFontWeight("bold")
+      .setBackground("#E8A9A9")
+      .setFontColor("#2E3B46");
+    sheet.setFrozenRows(1);
+    sheet.getRange("A:A").setNumberFormat("yyyy-mm-dd hh:mm");
+  }
+  return sheet;
+}
+
+function json(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+/** Run once from the editor (▶ Run → testRsvp) to check the sheet is writable. */
+function testRsvp() {
+  const res = handleRequest({
+    parameter: {
+      Name: "Test Guest",
+      Attending: "Yes",
+      Guests: "2",
+      Wish: "Congratulations!",
+      "Invited As": "Mr. Test",
+    },
+  });
+  Logger.log(res.getContent());
 }

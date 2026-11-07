@@ -188,7 +188,9 @@ function CountdownTimer() {
   );
 }
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxuGTj0NvL9KnWdpCBx7rawtYHWRtHSwllWSYEONdnhaIPyTnFvJGOp2srwBrNpoant/exec";
+// Google Apps Script Web App URL for Sasini & Janaka's RSVP sheet
+// (paste the /exec URL from Deploy → New deployment → Web app; see Code.ts)
+const SCRIPT_URL = "PASTE_YOUR_WEB_APP_URL_HERE";
 
 export default function WeddingInvitation() {
   const [isOpened, setIsOpened] = useState(false);
@@ -203,13 +205,12 @@ export default function WeddingInvitation() {
 
   // Form State
   const [rsvpData, setRsvpData] = useState({ name: guestName || "", guests: "1", dietary: "" });
-  const [wishData, setWishData] = useState({ name: guestName || "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<null | "rsvp_success" | "wish_success" | "error">(null);
+  const [submitStatus, setSubmitStatus] = useState<null | "rsvp_success" | "error">(null);
 
-  const handleSubmit = async (formName: "rsvp" | "wish", data: any) => {
-    if (!SCRIPT_URL) {
-      alert("Please configure the SCRIPT_URL in App.tsx to enable form submissions.");
+  const handleSubmit = async (formName: "rsvp", data: typeof rsvpData) => {
+    if (!SCRIPT_URL.startsWith("https://script.google.com/")) {
+      alert("RSVP is not connected yet. Please set SCRIPT_URL in App.tsx.");
       return;
     }
 
@@ -220,18 +221,13 @@ export default function WeddingInvitation() {
       const params = new URLSearchParams();
       params.append("formName", formName);
 
-      // Explicit mapping of keys to Sheet Headers
-      const fieldMapping: Record<string, string> = {
-        name: "Name",
-        guests: "Guests",
-        dietary: "Dietary Notes",
-        message: "Message"
-      };
-
-      Object.keys(data).forEach(key => {
-        const headerName = fieldMapping[key] || key;
-        params.append(headerName, data[key]);
-      });
+      // Keys must match the column names in Code.ts (HEADERS)
+      const declined = data.guests === "0";
+      params.append("Name", data.name);
+      params.append("Attending", declined ? "No" : "Yes");
+      params.append("Guests", declined ? "0" : data.guests);
+      params.append("Wish", data.dietary);
+      params.append("Invited As", hasGuest ? `${guestPrefix} ${guestName}` : "");
 
       // Using GET with no-cors is the most reliable way to trigger Google Apps Script
       // even if the browser blocks the JSON response due to CORS redirects.
@@ -242,11 +238,10 @@ export default function WeddingInvitation() {
       });
 
       // Since we use no-cors, we can't read the response, so we assume success if no exception
-      setSubmitStatus(`${formName}_success` as any);
+      setSubmitStatus("rsvp_success");
 
       // Reset forms
-      if (formName === "rsvp") setRsvpData({ name: guestName || "", guests: "1", dietary: "" });
-      else setWishData({ name: guestName || "", message: "" });
+      setRsvpData({ name: guestName || "", guests: "1", dietary: "" });
 
     } catch (error) {
       console.error("Submission error:", error);
