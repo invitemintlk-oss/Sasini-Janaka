@@ -8,30 +8,50 @@
   --font-montserrat: "Montserrat", sans-serif;
   --font-playball: "Playball", cursive;
 
-  --color-sage: #86efac;
+  /* Palette: sage #959F8B, dusty blue #A8B8C0, butter #F4DE8C, blush #E8A9A9, pale pink #EBCFCF */
+  --color-sage: #959F8B;
   --color-paper: #FFFFFF;
 
-  --color-theme-50: #f0fdf4;
-  --color-theme-100: #dcfce7;
-  --color-theme-200: #bbf7d0;
-  --color-theme-300: #86efac;
-  --color-theme-400: #4ade80;
-  --color-theme-500: #22c55e;
-  --color-theme-600: #16a34a;
-  --color-theme-700: #15803d;
-  --color-theme-800: #166534;
-  --color-theme-900: #14532d;
+  /* Main scale: dusty blue (deep shades used for text) */
+  --color-theme-50: #F3F6F8;
+  --color-theme-100: #E4EBEF;
+  --color-theme-200: #CCD8DF;
+  --color-theme-300: #A8B8C0;
+  --color-theme-400: #8FA3AE;
+  --color-theme-500: #7891A0;
+  --color-theme-600: #5F7888;
+  --color-theme-700: #4C6170;
+  --color-theme-800: #3C4D5A;
+  --color-theme-900: #2E3B46;
+
+  --color-blush-50: #FBF4F3;
+  --color-blush-100: #F6E4E4;
+  --color-blush-200: #EBCFCF;
+  --color-blush-300: #E8A9A9;
+  --color-blush-400: #D98E8E;
+  --color-blush-500: #C97F80;
+
+  --color-butter-50: #FEFAEC;
+  --color-butter-100: #FBF1CF;
+  --color-butter-200: #F8E8AE;
+  --color-butter-300: #F4DE8C;
+  --color-butter-400: #E8CB6A;
+
+  --color-sage-400: #959F8B;
+  --color-sage-500: #7B8671;
+
+  --color-peach-200: #F7D9BF;
 }
 
 .silver-border {
-  border: 2px solid #86efac;
+  border: 2px solid #A8B8C0;
   box-shadow: 
     0 0 0 1px rgba(255, 255, 255, 0.4),
-    inset 0 0 10px rgba(134, 239, 172, 0.3);
+    inset 0 0 10px rgba(168, 184, 192, 0.3);
 }
 
 .silver-text {
-  background: linear-gradient(135deg, #4ade80 0%, #dcfce7 50%, #4ade80 100%);
+  background: linear-gradient(135deg, #7891A0 0%, #E4EBEF 50%, #7891A0 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: bold;
@@ -129,13 +149,49 @@ html, body {
 
 .website-shell {
   background:
-    radial-gradient(circle at 18% 14%, rgba(192, 192, 192, 0.19), transparent 38%),
-    radial-gradient(circle at 84% 72%, rgba(156, 163, 175, 0.16), transparent 42%),
-    linear-gradient(180deg, #ffffff 0%, #f9fafb 42%, #ffffff 100%);
+    radial-gradient(circle at 18% 14%, rgba(232, 169, 169, 0.19), transparent 38%),
+    radial-gradient(circle at 84% 72%, rgba(168, 184, 192, 0.16), transparent 42%),
+    linear-gradient(180deg, #ffffff 0%, #FBF4F3 42%, #ffffff 100%);
 }
 
 .section-floral-overlay {
   opacity: 0.6;
+}
+
+/* ---------- Pastel palette backgrounds ---------- */
+.wash-bouquet {
+  background:
+    radial-gradient(ellipse 55% 45% at 8% 12%, rgba(235, 207, 207, 0.8), transparent 70%),
+    radial-gradient(ellipse 45% 40% at 92% 8%, rgba(168, 184, 192, 0.5), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 95% 88%, rgba(244, 222, 140, 0.4), transparent 70%),
+    radial-gradient(ellipse 50% 45% at 5% 92%, rgba(149, 159, 139, 0.3), transparent 70%),
+    #FFFCF8;
+}
+
+.wash-blush {
+  background:
+    radial-gradient(ellipse 60% 40% at 0% 0%, rgba(235, 207, 207, 0.7), transparent 70%),
+    radial-gradient(ellipse 50% 35% at 100% 100%, rgba(244, 222, 140, 0.35), transparent 70%),
+    #FDF7F5;
+}
+
+.wash-sky {
+  background:
+    radial-gradient(ellipse 60% 55% at 100% 0%, rgba(168, 184, 192, 0.55), transparent 70%),
+    radial-gradient(ellipse 55% 50% at 0% 100%, rgba(235, 207, 207, 0.55), transparent 70%),
+    #F5F8F9;
+}
+
+.wash-sage {
+  background:
+    radial-gradient(ellipse 60% 50% at 0% 0%, rgba(149, 159, 139, 0.3), transparent 70%),
+    radial-gradient(ellipse 50% 45% at 100% 100%, rgba(244, 222, 140, 0.3), transparent 70%),
+    #F7F8F4;
+}
+
+/* Green orchid art -> soft sage */
+.tint-sage {
+  filter: saturate(0.45) hue-rotate(-8deg) brightness(1.04);
 }
 
 .section-floral-overlay::before {
@@ -143,22 +199,22 @@ html, body {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 20% 25%, rgba(192, 192, 192, 0.16), transparent 35%),
-    radial-gradient(circle at 78% 75%, rgba(156, 163, 175, 0.14), transparent 38%);
+    radial-gradient(circle at 20% 25%, rgba(232, 169, 169, 0.16), transparent 35%),
+    radial-gradient(circle at 78% 75%, rgba(168, 184, 192, 0.14), transparent 38%);
 }
 
 .paper-grain {
   background-image:
     radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.85) 0.5px, transparent 0.8px),
-    radial-gradient(circle at 78% 42%, rgba(192, 192, 192, 0.2) 0.6px, transparent 0.9px),
-    radial-gradient(circle at 42% 76%, rgba(156, 163, 175, 0.1) 0.5px, transparent 0.8px);
+    radial-gradient(circle at 78% 42%, rgba(232, 169, 169, 0.2) 0.6px, transparent 0.9px),
+    radial-gradient(circle at 42% 76%, rgba(168, 184, 192, 0.1) 0.5px, transparent 0.8px);
   background-size: 9px 9px, 15px 15px, 18px 18px;
 }
 
 .paper-grain-strong {
   background-image:
     radial-gradient(circle at 22% 24%, rgba(255, 255, 255, 0.88) 0.55px, transparent 0.85px),
-    radial-gradient(circle at 70% 64%, rgba(192, 192, 192, 0.22) 0.65px, transparent 0.95px),
+    radial-gradient(circle at 70% 64%, rgba(232, 169, 169, 0.22) 0.65px, transparent 0.95px),
     linear-gradient(180deg, rgba(255, 255, 255, 0.75), rgba(249, 250, 251, 0.8));
   background-size: 8px 8px, 14px 14px, 100% 100%;
 }
