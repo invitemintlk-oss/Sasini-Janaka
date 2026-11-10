@@ -9,7 +9,7 @@ import { Sparkles, MapPin, Calendar, Clock } from "lucide-react";
  * Accents: Pastel palette
  */
 
-const backgroundMusic = "/hathara-kendare.mp3";
+const backgroundMusic = "/hathara-kendare-cut.mp3";
 
 
 const flowerArchImage = "/silver_orchid_arch.png";
